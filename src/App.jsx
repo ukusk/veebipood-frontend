@@ -17,11 +17,7 @@ function App() {
       .then((data) => {
         console.log(data);
 
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else {
-          setProducts([]);
-        }
+        setProducts(data.content);
 
         setLoading(false);
       })
