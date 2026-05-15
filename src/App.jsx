@@ -3,13 +3,42 @@ import "./App.css";
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetch("https://veebipood-backend-f4it.onrender.com/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((error) => console.log(error));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Backend error");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          setProducts([]);
+        }
+
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setError("Failed to load products");
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (error) {
+    return <h1>{error}</h1>;
+  }
 
   return (
     <div>
